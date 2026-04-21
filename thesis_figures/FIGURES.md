@@ -344,3 +344,80 @@ Hours spent in Train vs Explain on each machine.
 **Interpretation**: GAT attention cost dominates explain phase on Machine C. Future work should either shard GAT across more GPUs or restrict to structural explainers.
 
 **Related**: D4.
+
+---
+
+# v3.1 Additional Figures — Native Scenario & PyG Fixes
+
+Added 2026-04-21 in response to academic investigation of PGExplainer/Jaccard findings.
+
+## R7 — Native 1:30 pass rate by architecture
+
+**Section**: Results
+**Type**: Bar chart
+**Data file**: `results/R7_native_pass_rate_by_arch.data.csv`
+
+Passing rate per architecture when trained on Elliptic's NATIVE imbalance (~1:30) instead of forced scenarios. Allows comparison with Weber 2019 baseline.
+
+**Key numbers**:
+- GCN: 0/3 (0%) — native training insufficient, consistent with Weber GCN weakness
+- GraphSAGE: 3/3 (100%) — all pass
+- GAT: 2/3 (67%)
+- TAGCN: 1/3 (33%)
+
+**Interpretation**: Native scenario with proper balancing validates model competence. GraphSAGE particularly strong at native ratio, confirming architecture choice.
+
+## A11 — Spearman native vs forced scenarios
+
+**Section**: Analysis
+**Type**: Bar chart with error bars
+**Data file**: `analysis/A11_spearman_native_vs_forced.data.csv`
+
+Compares GNNExplainer Spearman across scenarios, with native 1:30 inserted between 1:10 and 1:50.
+
+**Key numbers** (mean Spearman):
+- 1:1: 0.422 (n=3)
+- 1:10: 0.531 (n=8)
+- **1:30_native: 0.159 (n=6) — LOWER than expected**
+- 1:50: 0.593 (n=5) — peak
+- 1:100: 0.239 (n=1)
+
+**Interpretation**: Surprisingly, native scenario has LOWER XAI stability than controlled scenarios. Possible reason: controlled scenarios enforce consistency via balancing, while native's natural heterogeneity produces more varied explanations. **Novel finding** — challenges assumption that "native is always best".
+
+## A12 — Native heatmap (architecture × explainer)
+
+**Section**: Analysis
+**Type**: Heatmap
+**Data file**: `analysis/A12_native_heatmap.data.csv`
+
+Per (arch, explainer) Spearman for native 1:30 only.
+
+**Interpretation**: At native ratio, GAT shows more stable explanations than GraphSAGE — confirming the accuracy-stability tradeoff cross-scenarios.
+
+## D6 — Native vs literature SOTA
+
+**Section**: Discussion
+**Type**: Horizontal bar chart
+**Data file**: `discussion/D6_native_vs_literature.data.csv`
+
+Compares our native-scenario F1 values with published literature baselines (Weber 2019, Pareja 2020, Bellei 2024, arXiv:2602.23599).
+
+**Our best native**: GraphSAGE F1=0.526 (val) — below SOTA (Bellei 0.93) but **competitive with Weber 2019 baseline (0.628)** validating model competence at native imbalance.
+
+**Interpretation**: The gap to modern SOTA (0.85+) is due to lacking:
+- Temporal architectures (EvolveGCN)
+- Subgraph-level classification (Elliptic2)
+- GraphNorm + Xavier initialization tweaks
+
+Our methodology is sound for XAI stability study; absolute prediction is not the focus.
+
+---
+
+## PyG 2.7 PGExplainer Bug Documentation
+
+The investigation in section 5 of `docs/literature_review.md` identified 2 bugs in PyG 2.7's PGExplainer implementation:
+
+**Bug #1**: `edge_size=0.05` (default) causes mode collapse. Fix: `edge_size=0.005`.
+**Bug #2**: `temp=[5.0, 2.0]` causes overflow on large graphs. Fix: `temp=[1.0, 1.0]` + gradient clipping.
+
+See `docs/CONCLUSIONES_v3.1.md` section 2 for full details. Fixes applied in `src/explainability/explainer_runner.py`.
