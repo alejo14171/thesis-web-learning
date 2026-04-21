@@ -145,8 +145,8 @@ export function saveQuizScore(sectionId, score, total) {
 
 export function getOverallProgress() {
   const profile = getActiveProfile();
-  if (!profile) return { completed: 0, total: 14, percentage: 0 };
-  const totalSections = 14; // welcome + 13 sections (s01-s13)
+  if (!profile) return { completed: 0, total: 18, percentage: 0 };
+  const totalSections = 18; // welcome + 17 sections (s01-s13 + s14-s17 v3.1)
   const completed = profile.sections_completed?.length || 0;
   return { completed, total: totalSections, percentage: Math.round((completed / totalSections) * 100) };
 }

@@ -23,13 +23,18 @@ import { getSection as s10 } from './sections/s10-results.js';
 import { getSection as s11 } from './sections/s11-anteproyecto.js';
 import { getSection as s12 } from './sections/s12-analysis.js';
 import { getSection as s13 } from './sections/s13-discussion.js';
+import { getSection as s14 } from './sections/s14-v31-bugs.js';
+import { getSection as s15 } from './sections/s15-v31-native.js';
+import { getSection as s16 } from './sections/s16-v31-literature.js';
+import { getSection as s17 } from './sections/s17-v31-synthesis.js';
 
 const SECTIONS = [
   'welcome',
   's01-graphs', 's02-gnn-intro', 's03-architectures', 's04-elliptic',
   's05-imbalance', 's06-balancing', 's07-explainability', 's08-stability',
   's09-methodology', 's10-results',
-  's11-anteproyecto', 's12-analysis', 's13-discussion'
+  's11-anteproyecto', 's12-analysis', 's13-discussion',
+  's14-v31-bugs', 's15-v31-native', 's16-v31-literature', 's17-v31-synthesis'
 ];
 
 const SECTION_LOADERS = {
@@ -45,7 +50,11 @@ const SECTION_LOADERS = {
   's10-results': s10,
   's11-anteproyecto': s11,
   's12-analysis': s12,
-  's13-discussion': s13
+  's13-discussion': s13,
+  's14-v31-bugs': s14,
+  's15-v31-native': s15,
+  's16-v31-literature': s16,
+  's17-v31-synthesis': s17
 };
 
 let currentSection = 'welcome';
@@ -219,7 +228,7 @@ function renderProfileModal() {
       html += `<div class="profile-list-item ${isActive ? 'active' : ''}" data-pid="${p.id}">
         <div>
           <div class="profile-item-name">${p.name} ${isActive ? '(activo)' : ''}</div>
-          <div class="profile-item-date">${completedCount}/14 secciones | Creado: ${new Date(p.created).toLocaleDateString('es')}</div>
+          <div class="profile-item-date">${completedCount}/18 secciones | Creado: ${new Date(p.created).toLocaleDateString('es')}</div>
         </div>
         <div class="profile-item-actions">
           ${!isActive ? `<button data-switch="${p.id}" title="Activar">&#9654;</button>` : ''}
